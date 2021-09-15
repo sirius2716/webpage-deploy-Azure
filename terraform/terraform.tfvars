@@ -1,0 +1,2 @@
+prefix   = "MyWeb"
+location = "westeurope"
