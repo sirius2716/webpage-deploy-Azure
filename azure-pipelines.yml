@@ -19,3 +19,30 @@ stages:
               replaceExistingArchive: true
           - publish: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
             artifact: 'www'
+  - stage: 'Deploy'
+    displayName: 'Deploy'
+    dependsOn: 'Build'
+    jobs:
+      - job: 'Provison'
+        displayName: 'Provion Azure VM with Terraform'
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          - group: 'Terraform'
+        steps:
+          - script: |
+              set -e
+
+              cd terraform
+              terraform init -input=false -backend-config="backend.tfvars"
+              terraform apply -input=false -auto-approve
+              PublicIp=$(terraform output -raw publicip)
+
+              echo "##vso[task.setvariable variable=PublicIp;isOutput=true]$PublicIp"
+            name: 'RunTerraform'
+            displayName: 'Run Terraform'
+            env:
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
