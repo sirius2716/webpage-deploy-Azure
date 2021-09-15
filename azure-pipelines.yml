@@ -67,7 +67,7 @@ stages:
                 - task: CopyFilesOverSSH@0
                   inputs:
                     sshEndpoint: 'MyWeb-SSH'
-                    sourceFolder: 'www'
+                    sourceFolder: '$(Pipeline.Workspace)/www'
                     contents: 'MyWeb-$(Build.BuildId).zip'
                     targetFolder: '/tmp/'
                     overwrite: true
