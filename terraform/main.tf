@@ -39,6 +39,7 @@ resource "azurerm_public_ip" "pip" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   allocation_method   = "Dynamic"
+  domain_name_label   = "mywebterraform2716"
 }
 
 resource "azurerm_network_interface" "main" {
