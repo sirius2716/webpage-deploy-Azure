@@ -38,6 +38,12 @@ stages:
               terraform apply -input=false -auto-approve
               PublicIp=$(terraform output -raw publicip)
 
+              if [ -z $PublicIp ]; then
+                sleep 30
+                terraform refresh
+                PublicIp=$(terraform output -raw publicip)
+              fi
+
               echo "##vso[task.setvariable variable=PublicIp;isOutput=true]$PublicIp"
             name: 'RunTerraform'
             displayName: 'Run Terraform'
@@ -46,3 +52,41 @@ stages:
               ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
               ARM_TENANT_ID: $(ARM_TENANT_ID)
               ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+      - deployment: 'Deploy'
+        displayName: 'Depoy files to server'
+        dependsOn: 'Provison'
+        pool:
+          vmImage: 'ubuntu-latest'
+        environment: 'dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: 'current'
+                  artifact: 'www'
+                - task: CopyFilesOverSSH@0
+                  inputs:
+                    sshEndpoint: 'MyWeb-SSH'
+                    sourceFolder: 'www'
+                    contents: 'MyWeb-$(Build.BuildId).zip'
+                    targetFolder: '/tmp/'
+                    overwrite: true
+                - task: SSH@0
+                  inputs:
+                    sshEndpoint: 'MyWeb-SSH'
+                    runOptions: 'inline'
+                    inline: |
+                      sudo systemctl stop nginx
+                      sudo rm -rf /var/www/html/*
+                      unzip -o $ZIP_FILE -d /var/www/html/
+                      sudo systemctl start nginx
+                    interpreterCommand: '/bin/bash'
+                  env:
+                    ZIP_FILE: '/tmp/MyWeb-$(Build.BuildId).zip'
+                    
+                    
+
+
+                
+
+
