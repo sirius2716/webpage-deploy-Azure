@@ -12,7 +12,7 @@ stages:
         steps:
           - task: ArchiveFiles@2
             inputs:
-              rootDirectory: '$(Pipeline.Workspace)/www'
+              rootFolderOrFile: '$(Pipeline.Workspace)/www'
               includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
