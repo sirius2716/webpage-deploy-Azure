@@ -18,7 +18,7 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
               replaceExistingArchive: true
           - publish: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
-            artifact: 'www'
+            artifact: 'site-artifact'
   - stage: 'Deploy'
     displayName: 'Deploy'
     dependsOn: 'Build'
@@ -63,11 +63,11 @@ stages:
             deploy:
               steps:
                 - download: 'current'
-                  artifact: 'www'
+                  artifact: 'site-artifact'
                 - task: CopyFilesOverSSH@0
                   inputs:
                     sshEndpoint: 'MyWeb-SSH'
-                    sourceFolder: '$(Pipeline.Workspace)/www'
+                    sourceFolder: '$(Pipeline.Workspace)/site-artifact'
                     contents: 'MyWeb-$(Build.BuildId).zip'
                     targetFolder: '/tmp/'
                     overwrite: true
