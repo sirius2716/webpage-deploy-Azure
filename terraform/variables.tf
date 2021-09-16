@@ -7,5 +7,5 @@ variable "location" {
 }
 
 variable "ssh_public_key" {
-  descripton = "SSH public key of the virtual machine in ssh-rsa format."
+  description = "SSH public key of the virtual machine in ssh-rsa format."
 }
