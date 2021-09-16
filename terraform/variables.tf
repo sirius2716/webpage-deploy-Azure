@@ -5,3 +5,7 @@ variable "prefix" {
 variable "location" {
   description = "The Azure Region in which all resources in this example should be created."
 }
+
+variable "ssh_public_key" {
+  descripton = "SSH public key of the virtual machine in ssh-rsa format."
+}

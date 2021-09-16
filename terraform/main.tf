@@ -96,16 +96,19 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = "${var.prefix}-vm"
-  resource_group_name             = azurerm_resource_group.main.name
-  location                        = azurerm_resource_group.main.location
-  size                            = "Standard_B1s"
-  admin_username                  = "adminuser"
-  admin_password                  = "P@ssw0rd1234!"
-  disable_password_authentication = false
+  name                = "${var.prefix}-vm"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  size                = "Standard_B1s"
+  admin_username      = "adminuser"
   network_interface_ids = [
     azurerm_network_interface.main.id
   ]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = var.ssh_public_key
+  }
 
   source_image_reference {
     publisher = "canonical"
