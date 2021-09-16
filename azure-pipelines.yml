@@ -74,13 +74,16 @@ stages:
                 - task: SSH@0
                   inputs:
                     sshEndpoint: 'MyWeb-SSH'
-                    runOptions: 'commands'
-                    commands: |
+                    runOptions: 'inline'
+                    inline: |
                       sudo systemctl stop nginx
                       sudo rm -rf /var/www/html/*
+                      echo "\$ZIP_FILE=$ZIP_FILE"
+                      sudo echo "sudo \$ZIP_FILE=$ZIP_FILE"
+                      sudo echo "unzip -o $ZIP_FILE -d /var/www/html/"
                       sudo unzip -o $ZIP_FILE -d /var/www/html/
                       sudo systemctl start nginx
-                    #interpreterCommand: '/bin/bash'
+                    interpreterCommand: '/bin/bash'
                   env:
                     ZIP_FILE: '/tmp/MyWeb-$(Build.BuildId).zip'
                     
