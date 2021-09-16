@@ -78,14 +78,11 @@ stages:
                     inline: |
                       sudo systemctl stop nginx
                       sudo rm -rf /var/www/html/*
-                      echo "\$ZIP_FILE=$ZIP_FILE"
-                      sudo echo "sudo \$ZIP_FILE=$ZIP_FILE"
-                      sudo echo "unzip -o $ZIP_FILE -d /var/www/html/"
-                      sudo unzip -o $ZIP_FILE -d /var/www/html/
+                      echo "/tmp/MyWeb-$(Build.BuildId).zip"
+                      sudo unzip -o /tmp/MyWeb-$(Build.BuildId).zip -d /var/www/html/
                       sudo systemctl start nginx
                     interpreterCommand: '/bin/bash'
-                  env:
-                    ZIP_FILE: '/tmp/MyWeb-$(Build.BuildId).zip'
+
                     
                     
 
