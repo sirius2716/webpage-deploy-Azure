@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "westeurope",
+            "metadata": {
+                "description": "Azure region for deployment"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "rg_name": "MyWebApp-Appservice"
+    },
+    "resources": [
+        {
+            "name": "[variables('rg_name')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2019-10-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+            ],
+            "tags": {
+            }
+        },
+        {
+            "name": "MyWebApp",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "resourceGroup": "[variables('rg_name')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "relativePath": "mywebapp.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
