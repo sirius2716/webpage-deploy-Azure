@@ -1,5 +1,6 @@
 trigger:
-- main
+  - main
+  - arm-appservice
 
 stages:
   - stage: 'Build'
@@ -19,9 +20,10 @@ stages:
               replaceExistingArchive: true
           - publish: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
             artifact: 'site-artifact'
-  - stage: 'Deploy'
-    displayName: 'Deploy'
+  - stage: 'Deploy virtual machines'
+    displayName: 'Deploy to virtual machines with Terraform'
     dependsOn: 'Build'
+    condition: and(succeded(),eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs:
       - job: 'Provison'
         displayName: 'Provion Azure VM with Terraform'
@@ -82,8 +84,18 @@ stages:
                       sudo unzip -o /tmp/MyWeb-$(Build.BuildId).zip -d /var/www/html/
                       sudo systemctl start nginx
                     interpreterCommand: '/bin/bash'
-
-                    
+  - stage: 'Deploy appservice'
+    displayName: 'Deploy to appservice with ARM templates'
+    dependsOn: 'Build'
+    condition: and(succeded(),eq(variables['build.sourceBranch'], 'refs/heads/arm-appservice'))
+    jobs:
+      - job: 'Provison'
+        displayName: 'Provion Azure VM with Terraform'
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          - group: 'Terraform'
+        steps: []     
                     
 
 
