@@ -46,7 +46,7 @@ stages:
   - stage: 'Deploy virtual machines'
     displayName: 'Deploy to virtual machines with Terraform'
     dependsOn: 'Build'
-    condition: and(succeded(),eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    condition: and(succedeed(),eq(variables['build.sourceBranch'], 'refs/heads/main'))
     jobs:
       - job: 'Provison'
         displayName: 'Provion Azure VM with Terraform'
@@ -110,7 +110,7 @@ stages:
   - stage: 'Deploy appservice'
     displayName: 'Deploy to appservice with ARM templates'
     dependsOn: 'Build and publish'
-    condition: and(succeded(),eq(variables['build.sourceBranch'], 'refs/heads/arm-appservice'))
+    condition: and(succeeded(),eq(variables['build.sourceBranch'], 'refs/heads/arm-appservice'))
     jobs:
       - job: 'Provison'
         displayName: 'Provion Azure VM with Terraform'
