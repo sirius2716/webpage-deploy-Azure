@@ -38,7 +38,7 @@ stages:
           - task: Docker@2
             displayName: 'Build and Publish'
             inputs:
-              command: buildAndPublish
+              command: buildAndPush
               repository: 'mywebapp'
               tags: |
                 $(Build.BuildId)
