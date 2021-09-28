@@ -21,7 +21,7 @@ stages:
               replaceExistingArchive: true
           - publish: '$(Build.ArtifactStagingDirectory)/MyWeb-$(Build.BuildId).zip'
             artifact: 'site-artifact'
-  - stage: 'Build and publish'
+  - stage: 'Build_and_publish'
     displayName: 'Build and publish'
     condition: eq(variables['build.sourceBranch'], 'refs/heads/arm-appservice')
     jobs:
@@ -43,10 +43,10 @@ stages:
               tags: |
                 $(Build.BuildId)
                 latest
-  - stage: 'Deploy virtual machines'
+  - stage: 'Deploy_virtual_machines'
     displayName: 'Deploy to virtual machines with Terraform'
     dependsOn: 'Build'
-    condition: and(succeedeed(),eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(),eq(variables['build.sourceBranch'], 'refs/heads/main'))
     jobs:
       - job: 'Provison'
         displayName: 'Provion Azure VM with Terraform'
@@ -107,9 +107,9 @@ stages:
                       sudo unzip -o /tmp/MyWeb-$(Build.BuildId).zip -d /var/www/html/
                       sudo systemctl start nginx
                     interpreterCommand: '/bin/bash'
-  - stage: 'Deploy appservice'
+  - stage: 'Deploy_appservice'
     displayName: 'Deploy to appservice with ARM templates'
-    dependsOn: 'Build and publish'
+    dependsOn: 'Build_and_publish'
     condition: and(succeeded(),eq(variables['build.sourceBranch'], 'refs/heads/arm-appservice'))
     jobs:
       - job: 'Provison'
